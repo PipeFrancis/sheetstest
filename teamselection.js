@@ -12,10 +12,9 @@ const firebaseConfig = {
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
   
-
-  // Function to fetch and display the list of teams in alphabetical order
-function fetchAndDisplayTeams() {
-    db.collection("teams").orderBy("teamName").get() // Order by team name
+  // Function to fetch and display the list of teams in alphabetical order (case insensitive)
+  function fetchAndDisplayTeams() {
+    db.collection("teams").orderBy("teamNameLower").get()
       .then((querySnapshot) => {
         const teamsList = document.getElementById("teamsList");
         teamsList.innerHTML = ''; // Clear the current list
@@ -23,7 +22,7 @@ function fetchAndDisplayTeams() {
         querySnapshot.forEach((doc) => {
           const teamData = doc.data();
           const teamName = teamData.teamName;
-          const players = teamData.players.map(player => player.name).join(", "); //reorders
+          const players = teamData.players.map(player => player.name).join(", ");
   
           const teamElement = document.createElement("div");
           teamElement.textContent = `${teamName} (${players})`;
@@ -36,10 +35,9 @@ function fetchAndDisplayTeams() {
       });
   }
   
-  
-  // Function to check if a team name already exists
+  // Function to check if a team name already exists (case insensitive)
   function isTeamNameTaken(teamName) {
-    return db.collection("teams").where("teamName", "==", teamName).get()
+    return db.collection("teams").where("teamNameLower", "==", teamName.toLowerCase()).get()
       .then(querySnapshot => {
         return !querySnapshot.empty; // Returns true if a team with the same name exists
       });
@@ -76,7 +74,7 @@ function fetchAndDisplayTeams() {
       return;
     }
   
-    // Check if team name is already taken
+    // Check if team name is already taken (case insensitive)
     const teamExists = await isTeamNameTaken(teamName);
     if (teamExists) {
       document.getElementById('message').textContent = 'Team name already exists. Please choose a different name.';
@@ -84,7 +82,8 @@ function fetchAndDisplayTeams() {
     }
   
     const teamData = {
-      teamName: teamName,
+      teamName: teamName, // Original name for display
+      teamNameLower: teamName.toLowerCase(), // Lowercase version for sorting
       players: players,
       totalCost: totalCost
     };
