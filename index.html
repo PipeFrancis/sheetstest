@@ -31,7 +31,7 @@
           method: "POST",
           body: JSON.stringify({ team }),
           headers: { "Content-Type": "application/json" },
-          mode: "cors",
+          mode: "no-cors",
         });
 
         if (response.ok) {
