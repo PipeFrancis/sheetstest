@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Fantasy Team Submission</title>
+</head>
+
+<body>
+  <h1>Submit Your Fantasy Team</h1>
+
+  <form id="teamForm">
+    <label for="team">Team Name:</label>
+    <input type="text" id="team" name="team" required>
+    <button type="submit">Submit</button>
+  </form>
+
+  <p id="message"></p>
+
+  <script>
+    const form = document.getElementById('teamForm');
+    const message = document.getElementById('message');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const team = document.getElementById('team').value;
+      const scriptURL = "https://script.google.com/macros/s/AKfycby3UOW7qs0Lp5lo0FUVIwQvlSP3tihWOZP5gY5OczchXWaStzdnJjr2d-4alC7fvSUSpA/exec";
+
+      try {
+        const response = await fetch(scriptURL, {
+          method: "POST",
+          body: JSON.stringify({ team }),
+          headers: { "Content-Type": "application/json" },
+        });
+
+        if (response.ok) {
+          message.textContent = "Team submitted successfully!";
+          form.reset();
+        } else {
+          message.textContent = "Error submitting team.";
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        message.textContent = "Network error. Please try again.";
+      }
+    });
+  </script>
+
+</body>
+
+</html>
