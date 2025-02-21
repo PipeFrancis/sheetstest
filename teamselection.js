@@ -12,10 +12,10 @@ const firebaseConfig = {
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
   
-  // Function to fetch and display the list of teams
-  function fetchAndDisplayTeams() {
-    db.collection("teams")
-      .get()
+
+  // Function to fetch and display the list of teams in alphabetical order
+function fetchAndDisplayTeams() {
+    db.collection("teams").orderBy("teamName").get() // Order by team name
       .then((querySnapshot) => {
         const teamsList = document.getElementById("teamsList");
         teamsList.innerHTML = ''; // Clear the current list
@@ -23,7 +23,7 @@ const firebaseConfig = {
         querySnapshot.forEach((doc) => {
           const teamData = doc.data();
           const teamName = teamData.teamName;
-          const players = teamData.players.map(player => player.name).join(", ");
+          const players = teamData.players.map(player => player.name).join(", "); //reorders
   
           const teamElement = document.createElement("div");
           teamElement.textContent = `${teamName} (${players})`;
@@ -35,6 +35,7 @@ const firebaseConfig = {
         console.error("Error fetching teams: ", error);
       });
   }
+  
   
   // Function to check if a team name already exists
   function isTeamNameTaken(teamName) {
