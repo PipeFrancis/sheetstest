@@ -14,22 +14,21 @@ const firebaseConfig = {
   
   // Function to fetch and display the list of teams
   function fetchAndDisplayTeams() {
-    // Reference to the 'teams' collection in Firestore
     db.collection("teams")
       .get()
       .then((querySnapshot) => {
         const teamsList = document.getElementById("teamsList");
         teamsList.innerHTML = ''; // Clear the current list
-        
+  
         querySnapshot.forEach((doc) => {
           const teamData = doc.data();
           const teamName = teamData.teamName;
-          const players = teamData.players.map(player => player.name).join(", ");  // Join player names with commas
+          const players = teamData.players.map(player => player.name).join(", ");
   
           const teamElement = document.createElement("div");
           teamElement.textContent = `${teamName} (${players})`;
   
-          teamsList.appendChild(teamElement);  // Append the new team to the list
+          teamsList.appendChild(teamElement);
         });
       })
       .catch((error) => {
@@ -37,11 +36,24 @@ const firebaseConfig = {
       });
   }
   
+  // Function to check if a team name already exists
+  function isTeamNameTaken(teamName) {
+    return db.collection("teams").where("teamName", "==", teamName).get()
+      .then(querySnapshot => {
+        return !querySnapshot.empty; // Returns true if a team with the same name exists
+      });
+  }
+  
   // Submit button click event listener
-  document.getElementById('submitTeam').addEventListener('click', function() {
+  document.getElementById('submitTeam').addEventListener('click', async function() {
     const teamName = document.getElementById('teamName').value.trim();
     const players = [];
     const costs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  
+    if (!teamName) {
+      document.getElementById('message').textContent = 'Team name cannot be empty.';
+      return;
+    }
   
     for (let i = 1; i <= 10; i++) {
       if (document.getElementById(`p${i}`).checked) {
@@ -63,6 +75,13 @@ const firebaseConfig = {
       return;
     }
   
+    // Check if team name is already taken
+    const teamExists = await isTeamNameTaken(teamName);
+    if (teamExists) {
+      document.getElementById('message').textContent = 'Team name already exists. Please choose a different name.';
+      return;
+    }
+  
     const teamData = {
       teamName: teamName,
       players: players,
@@ -73,7 +92,7 @@ const firebaseConfig = {
     db.collection("teams").add(teamData)
       .then(() => {
         document.getElementById('message').textContent = 'Team successfully submitted!';
-        fetchAndDisplayTeams();  // Refresh the list of teams
+        fetchAndDisplayTeams(); // Refresh the list of teams
         document.getElementById('teamName').value = '';
         for (let i = 1; i <= 10; i++) {
           document.getElementById(`p${i}`).checked = false;
@@ -87,6 +106,6 @@ const firebaseConfig = {
   
   // Load teams when the page is loaded
   window.onload = function() {
-    fetchAndDisplayTeams();  // Fetch and display teams on page load
+    fetchAndDisplayTeams();
   };
   
