@@ -9,8 +9,8 @@ const firebaseConfig = {
   };
   
   // Initialize Firebase App and Firestore
-  const app = firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore(app);
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
   
   document.getElementById('submitTeam').addEventListener('click', function() {
     // Get team name
