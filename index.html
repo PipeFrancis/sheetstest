@@ -1,52 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <title>Fantasy Team Submission</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fantasy Basketball Team Selection</title>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
 </head>
-
 <body>
-  <h1>Submit Your Fantasy Team</h1>
+  <h1>Fantasy Basketball Team Selection</h1>
+  
+  <div>
+    <label for="teamName">Team Name:</label>
+    <input type="text" id="teamName" placeholder="Enter your team name">
+  </div>
 
-  <form id="teamForm">
-    <label for="team">Team Name:</label>
-    <input type="text" id="team" name="team" required>
-    <button type="submit">Submit</button>
-  </form>
+  <div>
+    <h3>Select 3 Players (Max Total Cost: $20)</h3>
+    <label><input type="checkbox" id="p1"> Player 1 - $1</label><br>
+    <label><input type="checkbox" id="p2"> Player 2 - $2</label><br>
+    <label><input type="checkbox" id="p3"> Player 3 - $3</label><br>
+    <label><input type="checkbox" id="p4"> Player 4 - $4</label><br>
+    <label><input type="checkbox" id="p5"> Player 5 - $5</label><br>
+    <label><input type="checkbox" id="p6"> Player 6 - $6</label><br>
+    <label><input type="checkbox" id="p7"> Player 7 - $7</label><br>
+    <label><input type="checkbox" id="p8"> Player 8 - $8</label><br>
+    <label><input type="checkbox" id="p9"> Player 9 - $9</label><br>
+    <label><input type="checkbox" id="p10"> Player 10 - $10</label><br>
+  </div>
 
-  <p id="message"></p>
+  <button id="submitTeam">Submit Team</button>
 
-  <script>
-    const form = document.getElementById('teamForm');
-    const message = document.getElementById('message');
+  <div id="message"></div>
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const team = document.getElementById('team').value;
-      const scriptURL = "https://script.google.com/macros/s/AKfycbxDAFcbVEF2vBsd0tqSHUXC9xigBYt1PiXv8VUjw5SVn5jSvx_Bx_lovvuY2IHIQQYyog/exec";
-
-      try {
-        const response = await fetch(scriptURL, {
-          method: "POST",
-          body: JSON.stringify({ team }),
-          headers: { "Content-Type": "application/json" },
-          mode: "cors",
-        });
-
-        if (response.ok) {
-          message.textContent = "Team submitted successfully!";
-          form.reset();
-        } else {
-          message.textContent = "Error submitting team.";
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        message.textContent = "Network error. Please try again.";
-      }
-    });
-  </script>
-
+  <script src="teamSelection.js"></script>
 </body>
-
 </html>
